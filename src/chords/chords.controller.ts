@@ -1,7 +1,15 @@
 // Adding a new Controller for the chords
 
 // Nest Decorators
-import { Controller, Post, Body, Get, Param, Patch } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Param,
+  Patch,
+  Delete,
+} from '@nestjs/common';
 // Service (injectable)
 import { ChordsService } from './chords.service';
 
@@ -48,6 +56,12 @@ export class ChordsController {
       chordNotes,
       chordDegree,
     );
+    return null;
+  }
+
+  @Delete(':id')
+  removeChord(@Param('id') chordId: string) {
+    this.chordsService.deleteChord(chordId);
     return null;
   }
 }

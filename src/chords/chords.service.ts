@@ -45,6 +45,11 @@ export class ChordsService {
     this.chords[index] = updatedChord;
   }
 
+  deleteChord(chordId: string) {
+    const [singleChord, index] = this.findChord(chordId);
+    this.chords.splice(index, 1);
+  }
+
   // FINDING Chord and chords index
   private findChord(id: string): [Chord, number] {
     const singleChordIndex = this.chords.findIndex((chord) => chord.id === id);
