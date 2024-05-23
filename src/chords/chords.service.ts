@@ -6,13 +6,9 @@ export class ChordsService {
   chords: Chord[] = [];
 
   insertChord(name: string, notes: string, degree: number) {
-    const newChord = new Chord(
-      new Date().toString(),
-      name,
-      name.slice(0),
-      notes,
-      degree,
-    );
+    const chordId = new Date().toString();
+    const newChord = new Chord(chordId, name, name.slice(0), notes, degree);
     this.chords.push(newChord);
+    return chordId;
   }
 }
