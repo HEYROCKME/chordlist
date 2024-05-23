@@ -1,7 +1,7 @@
 // Adding a new Controller for the chords
 
 // Nest Decorators
-import { Controller, Post, Body, Get, Param } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Patch } from '@nestjs/common';
 // Service (injectable)
 import { ChordsService } from './chords.service';
 
@@ -33,5 +33,21 @@ export class ChordsController {
   @Get(':id')
   getChord(@Param('id') chordId: string) {
     return this.chordsService.getSingleChord(chordId);
+  }
+
+  @Patch(':id')
+  updateChord(
+    @Param('id') chordId: string,
+    @Body('name') chordName: string,
+    @Body('notes') chordNotes: string,
+    @Body('degree') chordDegree: number,
+  ) {
+    this.chordsService.updateSingleChord(
+      chordId,
+      chordName,
+      chordNotes,
+      chordDegree,
+    );
+    return null;
   }
 }

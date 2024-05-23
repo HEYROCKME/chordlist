@@ -17,10 +17,41 @@ export class ChordsService {
   }
 
   getSingleChord(chordId: string) {
-    const singleChord = this.chords.find((chord) => chord.id === chordId);
+    const singleChord = this.findChord(chordId)[0];
+    return { ...singleChord };
+  }
+
+  updateSingleChord(
+    chordId: string,
+    name: string,
+    notes: string,
+    degree: number,
+  ) {
+    const [singleChord, index] = this.findChord(chordId);
+    const updatedChord = { ...singleChord };
+
+    // Simple logic to replace values
+    if (name) {
+      updatedChord.name = name;
+      updatedChord.root = name.slice(0);
+    }
+    if (notes) {
+      updatedChord.notes = notes;
+    }
+    if (degree) {
+      updatedChord.degree = degree;
+    }
+    // Replace chord with the updated one
+    this.chords[index] = updatedChord;
+  }
+
+  // FINDING Chord and chords index
+  private findChord(id: string): [Chord, number] {
+    const singleChordIndex = this.chords.findIndex((chord) => chord.id === id);
+    const singleChord = this.chords[singleChordIndex];
     if (!singleChord) {
       throw new NotFoundException('Could not find the Chord.');
     }
-    return { ...singleChord };
+    return [singleChord, singleChordIndex];
   }
 }
