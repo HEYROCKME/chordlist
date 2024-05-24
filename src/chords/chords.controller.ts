@@ -35,8 +35,9 @@ export class ChordsController {
   // GET REQUESTs
   @Get()
   // Get all Chords
-  getAllChords() {
-    return this.chordsService.getChords();
+  async getAllChords() {
+    const chords = await this.chordsService.getChords();
+    return chords;
   }
   // Get Single Chord
   @Get(':id')

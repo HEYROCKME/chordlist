@@ -10,62 +10,80 @@ export class ChordsService {
 
   constructor(@InjectModel('Chord') private chordModel: Model<Chord>) {} //Mongoose constuctor function
 
-  async insertChord(name: string, notes: string, degree: number) {
+  async insertChord(chordName: string, notes: string, degree: number) {
     const newChord = new this.chordModel({
-      name: name,
+      chordName: chordName,
       notes: notes,
-      root: name.slice(0),
+      root: chordName.slice(0),
       degree,
     });
     const result = await newChord.save(); // Mongoose Save method
     return result.id;
   }
 
-  getChords() {
-    return [...this.chords];
+  async getChords() {
+    //return result from mongoDB
+    const chords = await this.chordModel.find().exec();
+
+    return chords.map((chord) => ({
+      id: chord.id,
+      chordName: chord.chordName,
+      notes: chord.notes,
+      root: chord.root,
+      degree: chord.degree,
+    }));
   }
 
-  getSingleChord(chordId: string) {
-    const singleChord = this.findChord(chordId)[0];
-    return { ...singleChord };
+  async getSingleChord(chordId: string) {
+    const singleChord = await this.findChord(chordId);
+    return singleChord;
   }
 
   updateSingleChord(
     chordId: string,
-    name: string,
+    chordName: string,
     notes: string,
     degree: number,
   ) {
-    const [singleChord, index] = this.findChord(chordId);
-    const updatedChord = { ...singleChord };
-
-    // Simple logic to replace values
-    if (name) {
-      updatedChord.name = name;
-      updatedChord.root = name.slice(0);
-    }
-    if (notes) {
-      updatedChord.notes = notes;
-    }
-    if (degree) {
-      updatedChord.degree = degree;
-    }
-    // Replace chord with the updated one
-    this.chords[index] = updatedChord;
+    // const [singleChord, index] = this.findChord(chordId);
+    // const updatedChord = { ...singleChord };
+    // // Simple logic to replace values
+    // if (chordName) {
+    //   updatedChord.chordName = chordName;
+    //   updatedChord.root = chordName.slice(0);
+    // }
+    // if (notes) {
+    //   updatedChord.notes = notes;
+    // }
+    // if (degree) {
+    //   updatedChord.degree = degree;
+    // }
+    // // Replace chord with the updated one
+    // this.chords[index] = updatedChord;
   }
 
   deleteChord(chordId: string) {
-    const [singleChord, index] = this.findChord(chordId);
-    this.chords.splice(index, 1);
+    // const [singleChord, index] = this.findChord(chordId);
+    // this.chords.splice(index, 1);
   }
 
   // FINDING Chord and chords index
-  private findChord(id: string): [Chord, number] {
-    const singleChordIndex = this.chords.findIndex((chord) => chord.id === id);
-    const singleChord = this.chords[singleChordIndex];
-    if (!singleChord) {
+  private async findChord(id: string): Promise<Chord> {
+    let chord;
+    try {
+      chord = await this.chordModel.findById(id);
+    } catch (error) {
       throw new NotFoundException('Could not find the Chord.');
     }
-    return [singleChord, singleChordIndex];
+    if (!chord) {
+      throw new NotFoundException('Could not find the Chord.');
+    }
+    return {
+      id: chord.id,
+      chordName: chord.chordName,
+      notes: chord.notes,
+      root: chord.root,
+      degree: chord.degree,
+    };
   }
 }
