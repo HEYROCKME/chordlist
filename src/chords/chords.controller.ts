@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 // Adding a new Controller for the chords
 
 // Nest Decorators
@@ -19,12 +20,12 @@ export class ChordsController {
 
   // POST REQUEST
   @Post()
-  addChord(
+  async addChord(
     @Body('name') chordName: string,
     @Body('notes') chordNotes: string,
     @Body('degree') chordDegree: number,
-  ): any {
-    const generatedID = this.chordsService.insertChord(
+  ): Promise<any> {
+    const generatedID = await this.chordsService.insertChord(
       chordName,
       chordNotes,
       chordDegree,

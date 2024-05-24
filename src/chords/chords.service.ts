@@ -1,15 +1,24 @@
+/* eslint-disable prettier/prettier */
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Chord } from './chord.model';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class ChordsService {
   private chords: Chord[] = [];
 
-  insertChord(name: string, notes: string, degree: number) {
-    const chordId = Math.random().toString();
-    const newChord = new Chord(chordId, name, name.slice(0), notes, degree);
-    this.chords.push(newChord);
-    return chordId;
+  constructor(@InjectModel('Chord') private chordModel: Model<Chord>) {} //Mongoose constuctor function
+
+  async insertChord(name: string, notes: string, degree: number) {
+    const newChord = new this.chordModel({
+      name: name,
+      notes: notes,
+      root: name.slice(0),
+      degree,
+    });
+    const result = await newChord.save(); // Mongoose Save method
+    return result.id;
   }
 
   getChords() {
