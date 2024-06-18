@@ -62,8 +62,8 @@ export class ChordsController {
   }
 
   @Delete(':id')
-  removeChord(@Param('id') chordId: string) {
-    this.chordsService.deleteChord(chordId);
+  async removeChord(@Param('id') chordId: string) {
+    await this.chordsService.deleteChord(chordId);
     return null;
   }
 }

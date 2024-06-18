@@ -6,8 +6,6 @@ import { Model } from 'mongoose';
 
 @Injectable()
 export class ChordsService {
-  private chords: Chord[] = [];
-
   constructor(@InjectModel('Chord') private chordModel: Model<Chord>) {} //Mongoose constuctor function
 
   async insertChord(chordName: string, notes: string, degree: number) {
@@ -68,16 +66,19 @@ export class ChordsService {
     updatedChord.save();
   }
 
-  deleteChord(chordId: string) {
-    // const [singleChord, index] = this.findChord(chordId);
-    // this.chords.splice(index, 1);
+  async deleteChord(chordId: string) {
+    const result = await this.chordModel.deleteOne({ _id: chordId }).exec();
+    console.log('delete request', result);
+    if (result.deletedCount === 0) {
+      throw new NotFoundException('Could not find the Chord.');
+    }
   }
 
   // FINDING Chord and chords index
   private async findChord(id: string): Promise<Chord> {
     let chord;
     try {
-      chord = await this.chordModel.findById(id);
+      chord = await this.chordModel.findById(id).exec();
     } catch (error) {
       throw new NotFoundException('Could not find the Chord.');
     }
@@ -85,12 +86,5 @@ export class ChordsService {
       throw new NotFoundException('Could not find the Chord.');
     }
     return chord;
-    // {
-    //   id: chord.id,
-    //   chordName: chord.chordName,
-    //   notes: chord.notes,
-    //   root: chord.root,
-    //   degree: chord.degree,
-    // };
   }
 }
