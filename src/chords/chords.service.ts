@@ -36,30 +36,36 @@ export class ChordsService {
 
   async getSingleChord(chordId: string) {
     const singleChord = await this.findChord(chordId);
-    return singleChord;
+    return {
+      id: singleChord.id,
+      chordName: singleChord.chordName,
+      notes: singleChord.notes,
+      root: singleChord.root,
+      degree: singleChord.degree,
+    };
   }
 
-  updateSingleChord(
+  async updateSingleChord(
     chordId: string,
     chordName: string,
     notes: string,
     degree: number,
   ) {
-    // const [singleChord, index] = this.findChord(chordId);
-    // const updatedChord = { ...singleChord };
-    // // Simple logic to replace values
-    // if (chordName) {
-    //   updatedChord.chordName = chordName;
-    //   updatedChord.root = chordName.slice(0);
-    // }
-    // if (notes) {
-    //   updatedChord.notes = notes;
-    // }
-    // if (degree) {
-    //   updatedChord.degree = degree;
-    // }
-    // // Replace chord with the updated one
-    // this.chords[index] = updatedChord;
+    const updatedChord = await this.findChord(chordId);
+
+    // Simple logic to replace values
+    if (chordName) {
+      updatedChord.chordName = chordName;
+      updatedChord.root = chordName.slice(0);
+    }
+    if (notes) {
+      updatedChord.notes = notes;
+    }
+    if (degree) {
+      updatedChord.degree = degree;
+    }
+    // Replace chord with the updated one
+    updatedChord.save();
   }
 
   deleteChord(chordId: string) {
@@ -78,12 +84,13 @@ export class ChordsService {
     if (!chord) {
       throw new NotFoundException('Could not find the Chord.');
     }
-    return {
-      id: chord.id,
-      chordName: chord.chordName,
-      notes: chord.notes,
-      root: chord.root,
-      degree: chord.degree,
-    };
+    return chord;
+    // {
+    //   id: chord.id,
+    //   chordName: chord.chordName,
+    //   notes: chord.notes,
+    //   root: chord.root,
+    //   degree: chord.degree,
+    // };
   }
 }

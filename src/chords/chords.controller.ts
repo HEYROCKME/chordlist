@@ -46,13 +46,13 @@ export class ChordsController {
   }
 
   @Patch(':id')
-  updateChord(
+  async updateChord(
     @Param('id') chordId: string,
-    @Body('name') chordName: string,
+    @Body('chordName') chordName: string,
     @Body('notes') chordNotes: string,
     @Body('degree') chordDegree: number,
   ) {
-    this.chordsService.updateSingleChord(
+    await this.chordsService.updateSingleChord(
       chordId,
       chordName,
       chordNotes,

@@ -11,7 +11,7 @@ export const ChordSchema = new mongoose.Schema({
   degree: { type: Number, requred: true },
 });
 
-export interface Chord {
+export interface Chord extends mongoose.Document {
   id: string;
   chordName: string;
   notes: string;
